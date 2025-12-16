@@ -1,7 +1,7 @@
 # SetDefaultAppsX
 "Enhanced" version of [SetDefaultapps](https://github.com/ScottEKendall/JAMF-Pro-Scripts/tree/main/SetDefaultApps) by Scott E Kendall
 
-# SetDefaultAppsX Setup Instructions
+# Setup Instructions
 
 ## Overview
 

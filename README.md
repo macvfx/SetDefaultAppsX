@@ -21,8 +21,10 @@ That's it! The script will automatically:
 
 - macOS (Apple Silicon or Intel)
 - **utiluti** - Command-line tool for managing UTI (Uniform Type Identifier) associations
-  - Install from: https://github.com/scriptingosx/utiluti
-- **swiftDialog** - Will be automatically downloaded and installed if not present
+  - Will be automatically downloaded and installed if not present
+  - Source: https://github.com/scriptingosx/utiluti
+- **swiftDialog** - swift UI for clean dialogs
+  - Will be automatically downloaded and installed if not present
   - Source: https://github.com/bartreardon/swiftDialog
 
 ## Installation Steps
@@ -52,14 +54,9 @@ If you want to customize the dialog banner:
 sudo cp your-banner-image.png "/Library/Application Support/SetDefaultAppsX/SupportFiles/SD_BannerImage.png"
 ```
 
-### Step 3: Install utiluti
+### Step 3: Install utiluti and swiftDialog for Managed Macs
 
-Install the utiluti command-line tool:
-
-```bash
-# Download and install from GitHub
-# Visit: https://github.com/scriptingosx/utiluti
-```
+Alternatively, if not detected, both will be automatically downloaded and installed if not present
 
 ### Step 4: Run SetDefaultAppsX
 
@@ -157,7 +154,7 @@ ls -ld /Users/Shared
 
 ### Error: "utiluti is not installed"
 
-Install utiluti from: https://github.com/scriptingosx/utiluti
+The script will automatically download and install utiluti from GitHub. Ensure you have internet connectivity.
 
 ### swiftDialog not installing
 
@@ -172,6 +169,11 @@ The script will automatically download and install swiftDialog from GitHub. Ensu
 | `SETUP.md` | This documentation file |
 
 ## Version History
+
+- ** 2.1** (2025-12-16)
+  - Automatically install utiluti
+  - Check for both binaries needed and install if necessary
+
 
 - **2.0** (2025-12-15)
   - Removed JAMF dependencies

@@ -170,7 +170,7 @@ The script will automatically download and install swiftDialog from GitHub. Ensu
 
 ## Version History
 
-- ** 2.1** (2025-12-16)
+- **2.1** (2025-12-16)
   - Automatically install utiluti
   - Check for both binaries needed and install if necessary
 

@@ -11,8 +11,8 @@ This document details the differences, changes, and fixes between the original *
 | Version | Script Name | Date | Author |
 |---------|-------------|------|--------|
 | 1.0 | SetDefaultApps.sh | 2025-12-11 | Scott Kendall |
-| 2.0 | SetDefaultAppsX.sh | 2025-12-15 | Modified by Claude |
-| 2.1 | SetDefaultAppsX.sh | 2025-12-16 | Modified by Claude |
+| 2.0 | SetDefaultAppsX.sh | 2025-12-15 | Modified by MacVFX |
+| 2.1 | SetDefaultAppsX.sh | 2025-12-16 | Modified by MacVFX |
 
 ---
 

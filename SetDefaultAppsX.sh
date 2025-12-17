@@ -2,18 +2,19 @@
 #
 # SetDefaultAppsX.sh
 #
-# Version: 2.0
-# Modified: 2025-12-15
-# Changes: Removed JAMF dependencies, added standalone swiftDialog installer
+# Version: 2.1
+# Modified: 2025-12-16
+# Changes: Added automatic utiluti download and installation with signature verification
 #
 # Original by: Scott Kendall
 # Written: 12/11/2025
-# Last updated: 12/11/2025
+# Last updated: 12/16/2025
 #
 # Script Purpose: set the default UTI applications (mailto, url, http, etc)
 #
 # 1.0 - Initial
 # 2.0 - Removed JAMF dependencies, added standalone swiftDialog installer
+# 2.1 - Added automatic utiluti download and installation with Team ID verification
 
 ######################################################################################################
 #
@@ -269,17 +270,71 @@ function check_swift_dialog_install ()
     fi
 }
 
+function install_utiluti ()
+{
+    # Download and install utiluti from GitHub releases
+    # Verifies package signature before installation
+    #
+    # RETURN: 0 on success, 1 on failure
+
+    logMe "utiluti not installed, downloading and installing"
+
+    expectedUtilitiTeamID="JME5BW3F3R"
+
+    logMe "Fetching latest utiluti release URL"
+    LOCATION=$(/usr/bin/curl -s https://api.github.com/repos/scriptingosx/utiluti/releases/latest | grep browser_download_url | grep .pkg | awk '{ print $2 }' | sed 's/,$//' | sed 's/"//g')
+
+    if [[ -z "$LOCATION" ]]; then
+        logMe "ERROR: Failed to get utiluti download URL"
+        return 1
+    fi
+
+    logMe "Download URL: $LOCATION"
+
+    logMe "Downloading utiluti package"
+    /usr/bin/curl -L "$LOCATION" -o /tmp/utiluti.pkg
+
+    if [[ ! -f /tmp/utiluti.pkg ]]; then
+        logMe "ERROR: Failed to download utiluti"
+        return 1
+    fi
+
+    logMe "Verifying package signature"
+    teamID=$(/usr/sbin/spctl -a -vv -t install "/tmp/utiluti.pkg" 2>&1 | awk '/origin=/ {print $NF }' | tr -d '()')
+
+    if [[ "$expectedUtilitiTeamID" = "$teamID" ]] || [[ "$expectedUtilitiTeamID" = "" ]]; then
+        logMe "utiluti Team ID verification succeeded (TeamID: $teamID)"
+        /usr/sbin/installer -pkg /tmp/utiluti.pkg -target /
+    else
+        logMe "ERROR: utiluti Team ID verification failed. Expected: $expectedUtilitiTeamID, Got: $teamID"
+        /bin/rm /tmp/utiluti.pkg
+        return 1
+    fi
+
+    logMe "Cleaning up utiluti.pkg"
+    /bin/rm /tmp/utiluti.pkg
+
+    return 0
+}
+
 function check_utiluti_install ()
 {
     # Check if utiluti is installed
-    # If not, provide helpful error message
+    # Will install if missing
     #
     # RETURN: None
 
+    logMe "Ensuring that utiluti is installed..."
     if [[ ! -x "${UTI_COMMAND}" ]]; then
-        logMe "ERROR: utiluti is not installed at ${UTI_COMMAND}"
-        logMe "Please install utiluti from: https://github.com/scriptingosx/utiluti"
-        exit 1
+        logMe "utiluti is missing - Installing from GitHub"
+        install_utiluti
+        if [[ $? -ne 0 ]]; then
+            logMe "ERROR: Failed to install utiluti"
+            logMe "Please install manually from: https://github.com/scriptingosx/utiluti"
+            exit 1
+        fi
+    else
+        logMe "utiluti is installed at ${UTI_COMMAND}"
     fi
 }
 

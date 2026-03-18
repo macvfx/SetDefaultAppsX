@@ -24,14 +24,14 @@ When the app launches, it automatically scans your system for all registered han
 The window has three sections:
 
 1. **Header** -- App title, description, and a Refresh button.
-2. **Tab picker** -- Switch between **Main Apps** and **Coding Files**.
+2. **Tab picker** -- Switch between **Apps** and **Code**.
 3. **File type list** -- One row per file type, each with its own controls.
 
 ---
 
-## Using the Main Apps Tab
+## Using the Apps Tab
 
-The Main Apps tab covers everyday file types and URL schemes:
+The Apps tab covers everyday file types and URL schemes:
 
 | Row | What It Controls |
 |-----|-----------------|
@@ -47,9 +47,9 @@ The Main Apps tab covers everyday file types and URL schemes:
 | HTML Files (.html) | Which app opens HTML files |
 | CSV Files (.csv) | Which app opens CSV files |
 
-## Using the Coding Files Tab
+## Using the Code Tab
 
-The Coding Files tab covers developer and configuration file types:
+The Code tab covers developer and configuration file types:
 
 | Row | What It Controls |
 |-----|-----------------|

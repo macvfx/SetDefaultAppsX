@@ -108,8 +108,8 @@ struct HelpView: View {
 
             GroupBox("Getting Started") {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Use the **Main Apps** tab to set defaults for common file types like PDF, text, email, and web browsing.")
-                    Text("Use the **Coding Files** tab to set defaults for developer files like JSON, YAML, shell scripts, and more.")
+                    Text("Use the **Apps** tab to set defaults for common file types like PDF, text, email, and web browsing.")
+                    Text("Use the **Code** tab to set defaults for developer files like JSON, YAML, shell scripts, and more.")
                     Text("Select an app from the dropdown, then click **Set** to apply. Or use **Apply All Changes** to apply everything at once.")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

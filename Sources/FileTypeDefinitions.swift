@@ -19,8 +19,8 @@ struct FileTypeEntry: Identifiable, Sendable {
 
 /// Groups file types into tabs.
 enum FileTypeCategory: String, CaseIterable, Identifiable, Sendable {
-    case main = "Main Apps"
-    case coding = "Coding Files"
+    case main = "Apps"
+    case coding = "Code"
 
     var id: String { rawValue }
 
@@ -40,7 +40,7 @@ enum FileTypeCategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    // MARK: - Main Apps
+    // MARK: - Apps
 
     private static let mainEntries: [FileTypeEntry] = [
         FileTypeEntry(
@@ -117,7 +117,7 @@ enum FileTypeCategory: String, CaseIterable, Identifiable, Sendable {
         ),
     ]
 
-    // MARK: - Coding Files
+    // MARK: - Code
 
     private static let codingEntries: [FileTypeEntry] = [
         FileTypeEntry(

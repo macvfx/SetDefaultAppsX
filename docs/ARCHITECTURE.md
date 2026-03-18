@@ -88,8 +88,8 @@ struct FileTypeEntry: Identifiable, Sendable {
 }
 
 enum FileTypeCategory: String, CaseIterable, Identifiable, Sendable {
-    case main = "Main Apps"
-    case coding = "Coding Files"
+    case main = "Apps"
+    case coding = "Code"
     var entries: [FileTypeEntry] { ... }
 }
 ```
@@ -244,7 +244,7 @@ This follows the same pattern used in the MHL Verify reference project.
 ```
 ContentView
 ├── headerView          (app title, description, refresh button)
-├── Picker (segmented)  (Main Apps / Coding Files toggle)
+├── Picker (segmented)  (Apps / Code toggle)
 ├── ScrollView
 │   └── LazyVStack
 │       └── FileTypeRow (x N per category)

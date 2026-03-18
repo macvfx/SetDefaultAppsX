@@ -11,14 +11,14 @@ All notable changes to this project are documented in this file. This changelog 
 SetDefaultAppsX is now a **native Swift/SwiftUI application**. No shell scripts, no swiftDialog, no utiluti. Just a `.app` that uses Apple's own APIs.
 
 ### Added
-- Native SwiftUI interface with segmented tab picker (Main Apps / Coding Files)
+- Native SwiftUI interface with segmented tab picker (Apps / Code)
 - Per-file-type rows with SF Symbol icons, current default display, app picker dropdown, and individual Set button
 - App icons shown in picker dropdowns via `NSWorkspace.icon(forFile:)`
 - Bulk "Apply All Changes" button per tab
 - Refresh button to re-scan registered handlers
 - About window with version info
-- **Main Apps tab** -- Email (mailto), Web Browser (https), FTP, PDF, Text, Markdown, Spreadsheets, Documents, Rich Text, HTML, CSV
-- **Coding Files tab** -- JSON, YAML, TOML, Property List, Mobile Config, XML, Shell (.sh), Zsh (.zsh), Python, Ruby, Swift, JavaScript
+- **Apps tab** -- Email (mailto), Web Browser (https), FTP, PDF, Text, Markdown, Spreadsheets, Documents, Rich Text, HTML, CSV
+- **Code tab** -- JSON, YAML, TOML, Property List, Mobile Config, XML, Shell (.sh), Zsh (.zsh), Python, Ruby, Swift, JavaScript
 - Fallback editor list for file types with no registered handlers (VS Code, BBEdit, CotEditor, Sublime Text, Nova, Xcode, TextEdit)
 - Candidate app filtering to exclude non-useful handlers
 - Full documentation: README, User Guide, Architecture, Changelog
@@ -140,8 +140,8 @@ SetDefaultAppsX is now a **native Swift/SwiftUI application**. No shell scripts,
 | Build | Shell script | Shell script | Shell script | Swift Package |
 | macOS minimum | Any | Any | Any | macOS 13 |
 | Install method | JAMF deployment | Copy + run | Copy + run | Build from source |
-| Main Apps | 8 types | 8 types | 8 types | 11 types |
-| Coding Files | -- | -- | -- | 12 types |
+| Apps | 8 types | 8 types | 8 types | 11 types |
+| Code | -- | -- | -- | 12 types |
 | Admin required | Yes (JAMF) | Optional | No | No |
 | Internet required | For JAMF | First run | First run | Never |
 

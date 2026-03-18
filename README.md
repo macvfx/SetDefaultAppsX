@@ -6,7 +6,7 @@ SetDefaultAppsX replaces the shell script + swiftDialog approach with a lightwei
 
 ## Features
 
-- **Two-tab interface** -- Main Apps (mail, web, PDF, text, MHL, etc.) and Coding Files (JSON, YAML, TOML, plist, shell, etc.)
+- **Two-tab interface** -- Apps (mail, web, PDF, text, MHL, etc.) and Code (JSON, YAML, TOML, plist, shell, etc.)
 - **Zero dependencies** -- No swiftDialog, no utiluti, no Homebrew. Just macOS frameworks.
 - **Per-row controls** -- See the current default, pick a replacement from a dropdown of all registered apps, and apply individually or in bulk.
 - **App icons** -- Each candidate app is shown with its real icon for quick identification.
@@ -35,7 +35,7 @@ xcodebuild -project SetDefaultAppsX.xcodeproj -scheme SetDefaultAppsX -configura
 
 ## Supported File Types
 
-### Main Apps Tab
+### Apps Tab
 
 | Category | Type | Method |
 |----------|------|--------|
@@ -52,7 +52,7 @@ xcodebuild -project SetDefaultAppsX.xcodeproj -scheme SetDefaultAppsX -configura
 | CSV Files | `.csv` | UTType |
 | Media Hash List | `.mhl` | UTType |
 
-### Coding Files Tab
+### Code Tab
 
 | Category | Type | Method |
 |----------|------|--------|

@@ -8,14 +8,13 @@ SetDefaultAppsX lets you choose which applications open each file type and URL s
 
 ### Opening the App
 
-Build and run from source:
+Open the Xcode project and build:
 
 ```bash
-cd SetDefaultAppsX
-swift run
+open SetDefaultAppsX.xcodeproj
 ```
 
-Or open `Package.swift` in Xcode and press **Cmd+R**.
+Then press **Cmd+R** to build and run. You can also archive (**Product → Archive**) to export a signed `.app` for distribution.
 
 When the app launches, it automatically scans your system for all registered handlers across every supported file type. This takes a moment on first launch.
 

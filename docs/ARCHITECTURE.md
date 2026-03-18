@@ -32,17 +32,17 @@ SetDefaultAppsX is a native macOS app built with **SwiftUI** and **Swift Package
 
 ## File-by-File Breakdown
 
-### Package.swift
+### SetDefaultAppsX.xcodeproj
 
 ```
 Platform: macOS 13+
-Swift tools: 6.2
-Single executable target: "SetDefaultAppsX"
+Swift version: 6.0
+Single app target: "SetDefaultAppsX"
 Source path: Sources/
 No external dependencies.
 ```
 
-The app is built as an executable Swift Package rather than an Xcode project. This keeps the build configuration minimal and makes it easy to build from the command line with `swift build` / `swift run`, or to open in Xcode via `open Package.swift`.
+The app is built as a native Xcode project with a proper `.app` bundle, `Info.plist`, entitlements, and asset catalog. Build from the command line with `xcodebuild`, or open in Xcode via `open SetDefaultAppsX.xcodeproj` and press **Cmd+R**.
 
 ---
 

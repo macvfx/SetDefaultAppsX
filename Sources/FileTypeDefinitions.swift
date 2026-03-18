@@ -153,7 +153,7 @@ enum FileTypeCategory: String, CaseIterable, Identifiable, Sendable {
         FileTypeEntry(
             id: "ext-xml",
             displayName: "XML (.xml)",
-            systemImage: "angle.brackets",
+            systemImage: "list.bullet.rectangle",
             kind: .fileExtension("xml")
         ),
         FileTypeEntry(

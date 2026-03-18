@@ -20,7 +20,6 @@ targets:
       - path: Sources
         type: group
       - path: App/Assets.xcassets
-        type: folder
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.setdefaultappsx.app

@@ -1,193 +1,124 @@
 # SetDefaultAppsX
-"Enhanced" version of [SetDefaultapps](https://github.com/ScottEKendall/JAMF-Pro-Scripts/tree/main/SetDefaultApps) by Scott E Kendall
 
-# Setup Instructions
+A native macOS application for setting default apps for file types and URL schemes. Built in Swift with SwiftUI.
 
-## Overview
+SetDefaultAppsX replaces the shell script + swiftDialog approach with a lightweight, dependency-free native app that uses Apple's own `NSWorkspace` and `UTType` APIs to query and set default handlers.
 
-SetDefaultAppsX is a macOS script that allows users to set default applications for various file types (mailto, http, ftp, documents, etc.) using a graphical dialog interface.
+## Features
 
-## Quick Start (Simplest Method)
-
-1. Install utiluti: https://github.com/scriptingosx/utiluti
-2. Run the script: `./SetDefaultAppsX.sh`
-
-That's it! The script will automatically:
-- Download and install swiftDialog if needed
-- Create directories in `/Users/Shared/SetDefaultAppsX/`
-- Run without requiring sudo
+- **Two-tab interface** -- Main Apps (mail, web, PDF, text, MHL, etc.) and Coding Files (JSON, YAML, TOML, plist, shell, etc.)
+- **Zero dependencies** -- No swiftDialog, no utiluti, no Homebrew. Just macOS frameworks.
+- **Per-row controls** -- See the current default, pick a replacement from a dropdown of all registered apps, and apply individually or in bulk.
+- **App icons** -- Each candidate app is shown with its real icon for quick identification.
+- **Modern APIs** -- Uses `NSWorkspace.setDefaultApplication(at:toOpen:)` (macOS 12+) for file extensions and `LSSetDefaultHandlerForURLScheme` for URL schemes.
 
 ## Requirements
 
-- macOS (Apple Silicon or Intel)
-- **utiluti** - Command-line tool for managing UTI (Uniform Type Identifier) associations
-  - Will be automatically downloaded and installed if not present
-  - Source: https://github.com/scriptingosx/utiluti
-- **swiftDialog** - swift UI for clean dialogs
-  - Will be automatically downloaded and installed if not present
-  - Source: https://github.com/bartreardon/swiftDialog
+- macOS 13 Ventura or later
+- Xcode 16+ (for building from source)
 
-## Installation Steps
+## Quick Start
 
-### Step 1: (Optional) Run the Preparation Script for System-Wide Setup
-
-**Note**: The preparation script is optional. If not run, SetDefaultAppsX will automatically create directories in `/Users/Shared/SetDefaultAppsX/` instead.
-
-For a system-wide installation in `/Library/Application Support/`, run:
+### Open in Xcode
 
 ```bash
-sudo ./PrepareSetDefaultAppsX.sh
+open SetDefaultAppsX.xcodeproj
 ```
 
-This script will create:
-- `/Library/Application Support/SetDefaultAppsX/` - Main support directory
-- `/Library/Application Support/SetDefaultAppsX/logs/` - Log files directory
-- `/Library/Application Support/SetDefaultAppsX/SupportFiles/` - Optional banner images
+Then press **Cmd+R** to build and run.
 
-**If you skip this step**, the script will automatically use `/Users/Shared/SetDefaultAppsX/` and create all necessary directories there without requiring sudo.
-
-### Step 2: (Optional) Add Custom Banner Image
-
-If you want to customize the dialog banner:
+### Build from the command line
 
 ```bash
-sudo cp your-banner-image.png "/Library/Application Support/SetDefaultAppsX/SupportFiles/SD_BannerImage.png"
+xcodebuild -project SetDefaultAppsX.xcodeproj -scheme SetDefaultAppsX -configuration Debug build
 ```
 
-### Step 3: Install utiluti and swiftDialog for Managed Macs
+## Supported File Types
 
-Alternatively, if not detected, both will be automatically downloaded and installed if not present
+### Main Apps Tab
 
-### Step 4: Run SetDefaultAppsX
+| Category | Type | Method |
+|----------|------|--------|
+| Email | `mailto` | URL scheme |
+| Web Browser | `https` | URL scheme |
+| File Transfer | `ftp` | URL scheme |
+| PDF Documents | `.pdf` | UTType |
+| Text Files | `.txt` | UTType |
+| Markdown | `.md` | UTType |
+| Spreadsheets | `.xlsx` | UTType |
+| Documents | `.docx` | UTType |
+| Rich Text | `.rtf` | UTType |
+| HTML Files | `.html` | UTType |
+| CSV Files | `.csv` | UTType |
+| Media Hash List | `.mhl` | UTType |
 
-Once the preparation is complete, any user can run the script without sudo:
+### Coding Files Tab
 
-```bash
-./SetDefaultAppsX.sh
+| Category | Type | Method |
+|----------|------|--------|
+| JSON | `.json` | UTType |
+| YAML | `.yaml` | UTType |
+| TOML | `.toml` | UTType |
+| Property List | `.plist` | UTType |
+| Mobile Config | `.mobileconfig` | UTType |
+| XML | `.xml` | UTType |
+| Shell Scripts | `.sh` | UTType |
+| Zsh Scripts | `.zsh` | UTType |
+| Python | `.py` | UTType |
+| Ruby | `.rb` | UTType |
+| Swift | `.swift` | UTType |
+| JavaScript | `.js` | UTType |
+
+## Project Structure
+
+```
+SetDefaultAppsX/
+├── SetDefaultAppsX.xcodeproj        # Xcode project (generated via xcodegen)
+├── project.yml                      # xcodegen spec
+├── README.md                        # This file
+├── App/
+│   ├── Info.plist                   # Bundle ID, version, app metadata
+│   ├── SetDefaultAppsX.entitlements # Entitlements
+│   └── Assets.xcassets/             # App icon and accent color
+├── Sources/
+│   ├── SetDefaultAppsXApp.swift     # @main app entry point, About & Help windows
+│   ├── ContentView.swift            # Main window UI (tabs, rows, controls)
+│   ├── DefaultAppStore.swift        # Core logic: lookup, set, state management
+│   └── FileTypeDefinitions.swift    # File type entries and category definitions
+└── docs/
+    ├── USER_GUIDE.md                # End-user guide
+    ├── ARCHITECTURE.md              # Code architecture and design
+    └── CHANGELOG.md                 # Version history
 ```
 
-## Directory Structure
+## How It Works
 
-### With PrepareSetDefaultAppsX.sh (System-Wide)
+SetDefaultAppsX uses native macOS APIs exclusively:
 
-After running PrepareSetDefaultAppsX.sh, the following structure will exist:
+1. **Discovery** -- `NSWorkspace.urlsForApplications(toOpen:)` finds all apps registered to handle a UTType or URL scheme.
+2. **Current default** -- `NSWorkspace.urlForApplication(toOpen:)` identifies the current default handler.
+3. **Setting defaults** -- `NSWorkspace.setDefaultApplication(at:toOpen:)` for file types, `LSSetDefaultHandlerForURLScheme` for URL schemes.
+4. **App metadata** -- `Bundle(url:)` and `FileManager.displayName(atPath:)` resolve display names and bundle identifiers.
 
-```
-/Library/Application Support/SetDefaultAppsX/
-├── logs/
-│   └── SetDefaultAppsX.log
-└── SupportFiles/
-    └── SD_BannerImage.png (optional)
-```
+No command-line tools are shelled out to. Everything runs in-process.
 
-### Without PrepareSetDefaultAppsX.sh (Automatic Fallback)
+## Origins
 
-If the preparation script is not run, the script will automatically create:
+SetDefaultAppsX is the native Swift successor to the SetDefaultAppsX.sh shell scripts (v1.0--v2.1) originally created by Scott Kendall. The shell versions used swiftDialog for the GUI and utiluti for UTI management. This native app eliminates those dependencies entirely while providing a richer, faster experience.
 
-```
-/Users/Shared/SetDefaultAppsX/
-├── logs/
-│   └── SetDefaultAppsX.log
-└── SupportFiles/
-    └── SD_BannerImage.png (optional)
-```
+See [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full evolution from shell script to native app.
 
-## Manual Setup (Alternative)
+## Links
 
-If you prefer to manually create the directories instead of using the preparation script:
+- [code.matx.ca](https://code.matx.ca)
+- [GitHub -- macvfx/SetDefaultAppsX](https://github.com/macvfx/SetDefaultAppsX)
 
-```bash
-# Create directories
-sudo mkdir -p "/Library/Application Support/SetDefaultAppsX/logs"
-sudo mkdir -p "/Library/Application Support/SetDefaultAppsX/SupportFiles"
+## Credits
 
-# Set permissions
-sudo chmod 755 "/Library/Application Support/SetDefaultAppsX"
-sudo chmod 777 "/Library/Application Support/SetDefaultAppsX/logs"
-sudo chmod 755 "/Library/Application Support/SetDefaultAppsX/SupportFiles"
-```
+- **Scott Kendall** -- Original SetDefaultApps shell script
+- **Bart Reardon** -- swiftDialog (used by the shell script predecessors)
+- **Armin Briegel** (scriptingOSX) -- utiluti (used by the shell script predecessors)
 
-## Managed Preferences (Optional)
+## License
 
-For enterprise deployments, you can use a managed preferences plist to customize settings:
-
-**Location**: `/Library/Managed Preferences/com.setdefaultappsx.defaults.plist`
-
-**Keys**:
-- `SupportFiles` - Path to support files directory
-- `BannerImage` - Filename of banner image
-- `BannerPadding` - Number of spaces for banner text padding
-
-Example:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>SupportFiles</key>
-    <string>/Library/Application Support/SetDefaultAppsX/SupportFiles/</string>
-    <key>BannerImage</key>
-    <string>SD_BannerImage.png</string>
-    <key>BannerPadding</key>
-    <integer>5</integer>
-</dict>
-</plist>
-```
-
-## Troubleshooting
-
-### Warning: "Application Support directory not found"
-
-This is normal if you haven't run the preparation script. The script will automatically fall back to `/Users/Shared/SetDefaultAppsX/` and create all necessary directories there.
-
-If you want to use the system-wide location instead, run:
-```bash
-sudo ./PrepareSetDefaultAppsX.sh
-```
-
-### Error: "Cannot create log file"
-
-This should not happen with the automatic fallback to `/Users/Shared`. If it does, check that `/Users/Shared` exists and is writable:
-```bash
-ls -ld /Users/Shared
-```
-
-### Error: "utiluti is not installed"
-
-The script will automatically download and install utiluti from GitHub. Ensure you have internet connectivity.
-
-### swiftDialog not installing
-
-The script will automatically download and install swiftDialog from GitHub. Ensure you have internet connectivity.
-
-## File Descriptions
-
-| File | Purpose |
-|------|---------|
-| `PrepareSetDefaultAppsX.sh` | One-time setup script (run with sudo) |
-| `SetDefaultAppsX.sh` | Main script for setting default apps (run as user) |
-| `SETUP.md` | This documentation file |
-
-## Version History
-
-- **2.1** (2025-12-16)
-  - Automatically install utiluti
-  - Check for both binaries needed and install if necessary
-
-
-- **2.0** (2025-12-15)
-  - Removed JAMF dependencies
-  - Added standalone swiftDialog installer
-  - Fixed Apple Silicon CPU detection
-  - Replaced GiantEagle references with SetDefaultAppsX
-  - Removed sudo from main script
-  - Added preparation script for directory setup
-
-- **1.0** (2025-12-11)
-  - Initial version by Scott Kendall
-
-## Support
-
-For issues or questions:
-- utiluti: https://github.com/scriptingosx/utiluti
-- swiftDialog: https://github.com/bartreardon/swiftDialog
+See the project repository for license information.

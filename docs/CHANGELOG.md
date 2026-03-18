@@ -1,0 +1,155 @@
+# SetDefaultAppsX -- Changelog
+
+All notable changes to this project are documented in this file. This changelog spans the entire evolution from the original shell script through to the native macOS app.
+
+---
+
+## [3.0.0] -- 2026-03-18 -- Native macOS App
+
+### The Big Rewrite
+
+SetDefaultAppsX is now a **native Swift/SwiftUI application**. No shell scripts, no swiftDialog, no utiluti. Just a `.app` that uses Apple's own APIs.
+
+### Added
+- Native SwiftUI interface with segmented tab picker (Main Apps / Coding Files)
+- Per-file-type rows with SF Symbol icons, current default display, app picker dropdown, and individual Set button
+- App icons shown in picker dropdowns via `NSWorkspace.icon(forFile:)`
+- Bulk "Apply All Changes" button per tab
+- Refresh button to re-scan registered handlers
+- About window with version info
+- **Main Apps tab** -- Email (mailto), Web Browser (https), FTP, PDF, Text, Markdown, Spreadsheets, Documents, Rich Text, HTML, CSV
+- **Coding Files tab** -- JSON, YAML, TOML, Property List, Mobile Config, XML, Shell (.sh), Zsh (.zsh), Python, Ruby, Swift, JavaScript
+- Fallback editor list for file types with no registered handlers (VS Code, BBEdit, CotEditor, Sublime Text, Nova, Xcode, TextEdit)
+- Candidate app filtering to exclude non-useful handlers
+- Full documentation: README, User Guide, Architecture, Changelog
+
+### Changed
+- **GUI framework**: swiftDialog (external process) replaced with native SwiftUI
+- **UTI queries**: utiluti CLI tool replaced with `UTType(filenameExtension:)` and `NSWorkspace` APIs
+- **URL scheme queries**: utiluti + `launchctl asuser` replaced with `NSWorkspace.urlForApplication(toOpen:)` and `NSWorkspace.urlsForApplications(toOpen:)`
+- **Default setting**: utiluti commands replaced with `NSWorkspace.setDefaultApplication(at:toOpen:)` for file types and `LSSetDefaultHandlerForURLScheme` for URL schemes
+- **Build system**: Shell script replaced with Swift Package Manager
+- **Platform requirement**: macOS 13 Ventura or later (was "any macOS" for shell scripts)
+
+### Removed
+- Dependency on swiftDialog (~5MB external binary)
+- Dependency on utiluti (~50KB external binary)
+- Dependency on `jq` for JSON parsing
+- All shell script infrastructure (`launchctl asuser`, `runAsUser`, temp files, JSON blob construction)
+- System info panel (CPU, RAM, disk space) -- not relevant for a native app
+- Banner image support -- replaced with native SF Symbol header
+- Managed preferences plist support -- may be re-added in a future version
+- Log file writing -- native app uses standard macOS console logging
+
+---
+
+## [2.1.0] -- 2025-12-16 -- Zero-Dependency Shell Script
+
+### The final shell script version before the native rewrite.
+
+### Added
+- Automatic utiluti download and installation from GitHub releases
+- Team ID signature verification for utiluti packages (Armin Briegel -- JME5BW3F3R)
+- New `install_utiluti()` function mirroring the swiftDialog installer pattern
+
+### Changed
+- `check_utiluti_install()` now calls `install_utiluti()` when binary is missing (was: error message and exit)
+- Script is now truly zero-dependency -- both swiftDialog and utiluti auto-install
+
+### Fixed
+- Users no longer need Homebrew or manual downloads to get utiluti
+
+---
+
+## [2.0.0] -- 2025-12-15 -- Standalone (JAMF-Free) Shell Script
+
+### The "X" release -- removed all JAMF Pro dependencies.
+
+### Added
+- Standalone swiftDialog installer that downloads from GitHub releases with Team ID verification (PWA5E9TQ59)
+- `check_directory_structure()` with automatic fallback from `/Library/Application Support/` to `/Users/Shared/`
+- `PrepareSetDefaultAppsX.sh` optional preparation script for system-wide directory setup
+- SF Symbol overlay icon (`xmark.circle`) replacing file-system icon dependency
+- Complete documentation: SETUP.md, EVOLUTION.md
+
+### Changed
+- **JAMF removal**: All `jamf policy -trigger` calls removed
+- **CPU detection**: `system_profiler` replaced with `sysctl -n machdep.cpu.brand_string` (20-30x faster, 100% reliable)
+- **RAM detection**: `system_profiler` replaced with `sysctl -n hw.memsize`
+- **macOS version**: swiftDialog placeholders `{osname} {osversion}` replaced with direct `sw_vers` calls
+- **Directory paths**: `GiantEagle` references replaced with `SetDefaultAppsX`
+- **Banner image**: Made fully optional (no missing icon errors)
+- **Script name**: `SetDefaultApps` renamed to `SetDefaultAppsX`
+
+### Removed
+- JAMF policy trigger variables (`DIALOG_INSTALL_POLICY`, `SUPPORT_FILE_INSTALL_POLICY`, `UTILUTI_INSTALL_POLICY`)
+- `check_support_files()` function (used JAMF triggers)
+- `JAMF_LOGGED_IN_USER` variable
+- Dependency on `system_profiler` for hardware detection
+
+### Fixed
+- CPU detection returning "Unknown" due to TCC restrictions
+- macOS version showing duplicate numbers ("macOS 26 26.2.0")
+- Permission denied errors when creating log directories without sudo
+- Missing banner image causing dialog errors
+
+---
+
+## [2.0.0-x2] -- 2025-12-15 -- Portable (Platypus-Ready) Shell Script
+
+### Variant designed for packaging as a standalone `.app` via Platypus.
+
+### Added
+- Local binary detection: checks script directory for `utiluti` and `dialog` before falling back to `/usr/local/bin/`
+- `SCRIPT_DIR` variable using `${0:a:h}` for portable path resolution
+
+### Changed
+- Binary paths are now resolved dynamically (local directory first, then system)
+- Removed auto-install of utiluti (user bundles binaries with the app instead)
+
+---
+
+## [1.0.0] -- 2025-12-11 -- Original Shell Script
+
+### The original JAMF-integrated version by Scott Kendall.
+
+### Features
+- swiftDialog GUI for selecting default applications
+- utiluti for UTI and URL scheme management
+- Support for mailto, https, ftp, xlsx, docx, txt, pdf, md
+- System info panel showing CPU, RAM, disk space, macOS version
+- Custom banner image support
+- Managed preferences plist for enterprise configuration
+- JAMF policy triggers for dependency installation
+
+### Dependencies
+- JAMF Pro infrastructure
+- swiftDialog (installed via JAMF policy)
+- utiluti (installed via JAMF policy)
+- Support files (installed via JAMF policy)
+
+---
+
+## Version Comparison
+
+| Feature | v1.0 (Shell/JAMF) | v2.0 (Shell/Standalone) | v2.1 (Shell/Zero-Dep) | v3.0 (Native App) |
+|---------|-------------------|------------------------|----------------------|-------------------|
+| GUI | swiftDialog | swiftDialog | swiftDialog | SwiftUI (native) |
+| UTI engine | utiluti CLI | utiluti CLI | utiluti CLI | NSWorkspace + UTType |
+| Dependencies | JAMF + swiftDialog + utiluti | swiftDialog + utiluti | None (auto-install) | None |
+| Build | Shell script | Shell script | Shell script | Swift Package |
+| macOS minimum | Any | Any | Any | macOS 13 |
+| Install method | JAMF deployment | Copy + run | Copy + run | Build from source |
+| Main Apps | 8 types | 8 types | 8 types | 11 types |
+| Coding Files | -- | -- | -- | 12 types |
+| Admin required | Yes (JAMF) | Optional | No | No |
+| Internet required | For JAMF | First run | First run | Never |
+
+---
+
+## Credits
+
+- **Scott Kendall** -- Original SetDefaultApps.sh (v1.0)
+- **Bart Reardon** -- swiftDialog (used in v1.0--v2.1)
+- **Armin Briegel** (scriptingOSX) -- utiluti (used in v1.0--v2.1)
+- **Claude** -- v2.0, v2.1 modifications; v3.0 native app
